@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="description" content="SkillsDoc - Manage and showcase your verified skills and certificates." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SkillsDoc – Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+  </style>
+</head><!-- Your <head> and styles stay unchanged -->
+
+<!-- Inside <body> -->
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex items-center justify-center">
+  <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full fade-in">
+    <div class="flex justify-center mb-6">
+      <img src="https://img.icons8.com/color/96/graduation-cap--v1.png" alt="SkillsDoc" class="h-16 w-16" />
+    </div>
+
+    <h1 class="text-2xl font-semibold text-center text-gray-800">Welcome to <span class="text-blue-600">SkillsDoc</span></h1>
+    <p id="status" class="text-center text-gray-500 mt-2">Checking login...</p>
+
+    <!-- Login Button -->
+    <button id="loginBtn"
+            class="mt-6 w-full flex items-center justify-center gap-3 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition hidden">
+      <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google" />
+      Sign in with Google
+    </button>
+
+    <!-- First-time name prompt -->
+     <div id="nameBox" class="hidden mt-6">
+  <label for="username" class="block mb-2 text-sm text-gray-700 text-center">Enter your name to complete profile:</label>
+  <input id="username" type="text" placeholder="e.g. MY NAME"
+         class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4" />
+
+  <button id="saveNameBtn"
+          class="bg-green-600 text-white w-full py-2 rounded-md hover:bg-green-700 font-semibold">
+    Save and Continue
+  </button>
+
+  <button id="changeAccountBtn"
+          class="w-full mt-2 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition">
+    🔁 Change Account
+  </button>
+</div>
+
+
+    <p class="mt-6 text-center text-xs text-gray-400">
+      By logging in, you agree to the <a href="terms.html" target="_blank" style="text-decoration: underline;">Terms & Conditions</a>
+    </p>
+
+    <footer style="text-align:center; font-size: 0.85rem; color:#6b7280; margin-top: 20px;">
+      © 2025 <strong>SkillsDoc</strong>. All rights reserved.
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC6BWoxFtPcw2u0HKmeiBR4ytauTwp59RQ",
+      authDomain: "skillsaver-d97db.firebaseapp.com",
+      projectId: "skillsaver-d97db",
+      storageBucket: "skillsaver-d97db.appspot.com",
+      messagingSenderId: "395139595997",
+      appId: "1:395139595997:web:33a36bb8ce2dafd8c2a534",
+      measurementId: "G-JC56NZC6RV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const db = getFirestore(app);
+
+    const loginBtn = document.getElementById("loginBtn");
+    const statusText = document.getElementById("status");
+    const nameBox = document.getElementById("nameBox");
+    const saveNameBtn = document.getElementById("saveNameBtn");
+    let currentUser = null;
+
+ onAuthStateChanged(auth, async (user) => {
+  console.log("🌀 Firebase Auth state changed");
+  if (user) {
+    console.log("👤 Logged in user:", user.displayName, user.uid);
+
+    const userRef = doc(db, "users", user.uid);
+    try {
+      const docSnap = await getDoc(userRef);
+      console.log("📄 Firestore doc found?", docSnap.exists());
+
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        console.log("✅ User data:", userData);
+        statusText.textContent = `Welcome back, ${userData.name || user.displayName}`;
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1500);
+      } else {
+        console.log("🆕 New user, showing name form");
+        statusText.textContent = `Hi ${user.displayName}, complete your profile.`;
+        nameBox.classList.remove("hidden");
+        loginBtn.classList.add("hidden");
+      }
+    } catch (error) {
+      console.error("❌ Firestore error:", error.message);
+      statusText.textContent = "Error connecting to database.";
+    }
+  } else {
+    console.log("❗ No user is signed in");
+    statusText.textContent = "Please log in to continue.";
+    loginBtn.classList.remove("hidden");
+  }
+});
+
+    loginBtn.addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then(async (result) => {
+          currentUser = result.user;
+          const userRef = doc(db, "users", currentUser.uid);
+          const docSnap = await getDoc(userRef);
+
+          if (docSnap.exists()) {
+            window.location.href = "dashboard.html";
+          } else {
+            nameBox.classList.remove("hidden");
+            loginBtn.classList.add("hidden");
+            statusText.textContent = `Hi ${currentUser.displayName}, please enter your name.`;
+          }
+        })
+        .catch((error) => {
+          console.error("Login error:", error);
+          statusText.textContent = "Login failed. Try again.";
+        });
+    });
+
+    document.getElementById("changeAccountBtn").addEventListener("click", async () => {
+  try {
+    await auth.signOut(); // Sign out the current user
+    location.reload();    // Reload to show the login button again
+  } catch (error) {
+    console.error("Error signing out:", error);
+    alert("Failed to switch account. Please try again.");
+  }
+});
+
+
+    saveNameBtn.addEventListener("click", async () => {
+  const name = document.getElementById("username").value.trim();
+  if (!name) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("No user logged in.");
+    return;
+  }
+
+  await setDoc(doc(db, "users", user.uid), {
+    name: name,
+    email: user.email,
+    createdAt: new Date()
+  });
+
+  window.location.href = "dashboard.html";
+});
+
+  </script>
+</body>
+
+</html>

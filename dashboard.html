@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkillsDoc Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#f3e8ff] min-h-screen">  <!-- light lavender -->
+
+<!-- Top Bar -->
+<header class="bg-gradient-to-r from-purple-200 via-purple-400 to-purple-100 shadow px-4 py-2 flex items-center gap-4 sticky top-0 z-50">
+  <button id="menuBtn" class="text-2xl font-bold md:hidden">☰</button>
+  <h1 class="text-xl font-bold text-gray-800">📄 SkillsDoc</h1>
+</header>
+
+<!-- Sidebar -->
+<aside id="sidebar" class="bg-gradient-to-b from-purple-800 via-purple-700 to-purple-900 text-white w-64 h-screen p-6 pt-16 space-y-6 fixed z-40 top-0 left-0 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+  <div class="flex flex-col items-center text-center space-y-2">
+    <img id="profilePic" class="w-20 h-20 rounded-full border shadow object-cover" src="https://ui-avatars.com/api/?name=User" alt="User">
+    <p id="userName" class="text-sm font-semibold text-white">User</p>
+    <p class="text-xs text-purple-200 italic px-2 text-center">“Education is a treasure that no one can steal.”</p>
+  </div>
+
+  <nav class="flex flex-col space-y-3 mt-6">
+    <button onclick="showSection('skillsSection')" class="text-left text-white hover:text-purple-300 font-medium">📄 My Skills</button>
+    <button onclick="showSection('profileSection')" class="text-left text-white hover:text-purple-300 font-medium">👤 My Profile</button>
+    <button onclick="showSection('binSection')" class="text-left text-white hover:text-purple-300 font-medium">🗑️ Recycle Bin</button>
+    <button onclick="showSection('settingsSection')"class="text-left text-white hover:text-purple-300 font-medium">⚙️ Settings</button>
+
+    <button id="logoutBtn" class="text-left text-white hover:text-red-300 font-medium">🚪 Logout</button>
+  </nav>
+</aside>
+
+<!-- Overlay for mobile -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-30 z-30 hidden md:hidden"></div>
+
+<!-- Main Content -->
+<main class="ml-0 md:ml-64 px-4 pt-6 pb-8 bg-purple-900 text-white transition-all duration-300 min-h-screen">
+
+  
+
+<!-- Resume Modal -->
+<div id="resumeModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center hidden">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 max-w-md relative animate-fadeIn">
+    <button onclick="closeResumeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-lg">✖️</button>
+    <h3 class="text-xl font-bold text-purple-700 mb-2">🚧 Under Development</h3>
+    <p class="text-gray-700">Resume generation feature is coming soon. Stay tuned!</p>
+  </div>
+</div>
+
+  <!-- 🟢 My Skills Section -->
+<div id="skillsSection" class="space-y-6">
+  <!-- Top Header -->
+<div class="mb-4 flex justify-between items-center">
+  <h2 class="text-2xl font-bold text-purple-200 mb-4">📄 My Skills</h2>
+  <button onclick="openResumeModal()"
+    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md transition-all duration-200">
+    📝 Generate Resume
+  </button>
+</div>
+  
+  <!-- Skill Cards List -->
+  <div id="skillsList" class="space-y-4">
+    <!-- JS will inject skill cards here -->
+  </div>
+
+  <!-- Skill Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 bg-purple-900 bg-opacity-30 z-50 hidden flex items-center justify-center">
+    <div id="modalContent" class="bg-white p-6 rounded-xl shadow-lg w-full max-w-xl relative border border-purple-300 text-gray-800 animate-fadeIn">
+      <!-- Dynamic skill content -->
+    </div>
+  </div>
+
+  <!-- Floating Add Skill Button -->
+  <button id="openModalBtn"
+    class="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-full shadow-xl text-lg z-50 transition-all duration-300 ease-in-out">
+    ➕ Add Skill
+  </button>
+</div>
+
+<!-- No Skills Message -->
+    <div id="noSkillsMsg" class="text-purple-300 text-sm italic mt-6 hidden">
+      You haven't added any skills yet. Please click ➕ to add your first skill.
+    </div>
+  
+<!-- ⚙️ Settings Section -->
+<div id="settingsSection" class="hidden">
+  <section class="px-4 py-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">⚙️ Settings</h2>
+    <div id="settingsContent"></div>
+  </section>
+</div>
+
+
+
+  <!-- 🗑️ Recycle Bin Section -->
+ <div id="binSection" class="hidden">
+  <h2 class="text-2xl font-bold text-purple-200 mb-4">🗑️ Recycle Bin</h2>
+  <div id="binList" class="space-y-4"></div>
+  <p id="noBinMsg" class="text-purple-300 text-sm italic mt-6 hidden">Recycle Bin is empty.</p>
+</div>
+
+
+<!-- 👤 Profile Section -->
+<div id="profileSection" class="hidden">
+  <div class="bg-white p-6 rounded-lg shadow max-w-2xl mx-auto space-y-6 text-black">
+
+    <div class="flex items-center gap-6">
+      <img id="profilePic" src="https://ui-avatars.com/api/?name=User" alt="Profile Picture"
+        class="w-20 h-20 rounded-full border shadow object-cover" />
+      <div class="space-y-1">
+        <h3 id="profileNameDisplay" class="text-lg font-semibold">User</h3>
+        <p class="text-sm text-gray-600">Logged in via Google</p>
+        
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium">Display Name</label>
+        <input type="text" id="profileNameInput"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Email</label>
+        <input type="email" id="profileEmail" readonly
+          class="w-full mt-1 px-3 py-2 border rounded bg-gray-100 text-black shadow-sm" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Course</label>
+        <input type="text" id="profileCourse"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" placeholder="Eg: B.Tech" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">Department</label>
+        <input type="text" id="profileDept"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" placeholder="Eg: ECE" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">College</label>
+        <input type="text" id="profileCollege"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" placeholder="Eg: MA College of Engineering" />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium">University</label>
+        <input type="text" id="profileUniversity"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" placeholder="Eg: KTU" />
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium">Course Duration</label>
+        <input type="text" id="profileDuration"
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" placeholder="Eg: 2023 - 2027" />
+      </div>
+    </div>
+
+    <button onclick="saveProfileInfo()"
+      class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded shadow">
+      💾 Save Changes
+    </button>
+
+    <p class="text-xs text-gray-500 italic text-center">Changes affect only SkillsDoc and resume features.</p>
+  </div>
+</div>
+
+
+
+
+
+  <!-- Firebase + Script -->
+<script>
+  const fileCache = new Map(); // ✅ Define this ONCE near top of your script
+  const fileNameCache = {};
+  const menuBtn = document.getElementById("menuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
+
+  function toggleSidebar() {
+    const isOpen = !sidebar.classList.contains("-translate-x-full");
+
+    if (isOpen) {
+      sidebar.classList.add("-translate-x-full");
+      overlay.classList.add("hidden");
+      history.replaceState(null, "", location.href); // Reset history
+    } else {
+      sidebar.classList.remove("-translate-x-full");
+      overlay.classList.remove("hidden");
+      history.pushState({ sidebarOpen: true }, ""); // Add history state
+    }
+  }
+
+  menuBtn.addEventListener("click", toggleSidebar);
+  overlay.addEventListener("click", toggleSidebar);
+
+  window.addEventListener("popstate", (event) => {
+    if (event.state && event.state.sidebarOpen) {
+      toggleSidebar(); // Close on back
+    }
+  });
+</script>
+<script type="module">
+// ------------------- 🔁 Firebase & Setup -------------------
+import { writeBatch } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, collection, query, where, getDocs,
+  addDoc, updateDoc, deleteDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { deleteUser } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC6BWoxFtPcw2u0HKmeiBR4ytauTwp59RQ",
+  authDomain: "skillsaver-d97db.firebaseapp.com",
+  projectId: "skillsaver-d97db",
+  storageBucket: "skillsaver-d97db.appspot.com",
+  messagingSenderId: "395139595997",
+  appId: "1:395139595997:web:33a36bb8ce2dafd8c2a534",
+  measurementId: "G-JC56NZC6RV"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ------------------- 🔁 Global Elements -------------------
+const userName = document.getElementById("userName");
+const logoutBtn = document.getElementById("logoutBtn");
+const skillsList = document.getElementById("skillsList");
+const noSkillsMsg = document.getElementById("noSkillsMsg");
+const binList = document.getElementById("binList");
+const confirmModal = document.getElementById("confirmModal");
+const confirmMessage = document.getElementById("confirmMessage");
+
+let currentUid = null;
+
+// ------------------- 🔁 Auth & Profile -------------------
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUid = user.uid;
+
+  // Load user doc from Firestore
+  const userDoc = await getDoc(doc(db, "users", user.uid));
+  const data = userDoc.exists() ? userDoc.data() : {};
+
+  // Update UI with profile data or fallback to auth
+  const displayName = data.displayName || user.displayName || "User";
+  const photoURL = data.photoURL || user.photoURL || "https://ui-avatars.com/api/?name=User";
+
+  userName.textContent = displayName;
+  document.getElementById("profileNameInput").value = displayName;
+  document.getElementById("profileEmail").value = user.email || "N/A";
+  document.getElementById("profileUniversity").value = data.university|| "";
+  document.getElementById("profileNameDisplay").textContent = displayName|| "";
+
+  document.querySelectorAll("#profilePic").forEach(img => {
+    img.src = photoURL;
+    img.alt = displayName;
+  }); // ✅ this closing brace was missing
+
+  // ✅ Now this will run properly
+  document.getElementById("profileCourse").value = data.course || "";
+  document.getElementById("profileDept").value = data.department || "" ;
+  document.getElementById("profileCollege").value = data.college|| "";
+  
+  document.getElementById("profileDuration").value = data.duration|| "" ;
+
+  // Load skills
+  loadSkills(currentUid);
+
+  // Show dashboard section
+  showSection("skillsSection");
+});
+
+//--------------------------------------------------
+
+
+function showSection(sectionId) {
+  const sections = ["skillsSection", "profileSection", "binSection", "settingsSection"];
+  const buttons = document.querySelectorAll("aside nav button[data-nav]");
+
+  // Hide all sections
+  sections.forEach(id => {
+    const section = document.getElementById(id);
+    if (section) section.classList.add("hidden");
+  });
+
+  // Reset button highlights
+  buttons.forEach(btn => btn.classList.remove("bg-purple-600", "text-white"));
+
+  // Show the selected section
+  const target = document.getElementById(sectionId);
+  if (target) target.classList.remove("hidden");
+
+  // Highlight active button
+  const clickedBtn = [...buttons].find(btn => btn.getAttribute("onclick")?.includes(sectionId));
+  if (clickedBtn) clickedBtn.classList.add("bg-purple-600", "text-white");
+}
+
+
+
+//------------------
+
+// 🟣 Open Delete Modal (Globally Accessible)
+ window.openDeleteModal = function () {
+    const modal = document.getElementById("deleteAccountModal");
+    if (!modal) return;
+    modal.classList.remove("hidden");
+    history.pushState({ modal: true }, null); // Push state for back button
+  };
+
+  window.closeDeleteModal = function () {
+    const modal = document.getElementById("deleteAccountModal");
+    if (!modal) return;
+    modal.classList.add("hidden");
+    if (history.state?.modal) history.back(); // Remove pushed state
+  };
+
+  window.handleBackdropClose = function (event) {
+    if (event.target.id === "deleteAccountModal") {
+      window.closeDeleteModal();
+    }
+  };
+
+  // Attach backdrop close once DOM is loaded
+  window.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("deleteAccountModal");
+    if (modal) {
+      modal.addEventListener("click", window.handleBackdropClose);
+    }
+  });
+
+  // Back button listener
+  window.addEventListener("popstate", () => {
+    const modal = document.getElementById("deleteAccountModal");
+    if (modal && !modal.classList.contains("hidden")) {
+      window.closeDeleteModal();
+    }
+  });
+
+  // ESC key to close modal
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const modal = document.getElementById("deleteAccountModal");
+      if (modal && !modal.classList.contains("hidden")) {
+        window.closeDeleteModal();
+      }
+    }
+  });
+
+window.confirmDelete = function () {
+  if (typeof confirmDeleteAccount === "function") {
+    confirmDeleteAccount();
+    window.closeDeleteModal();
+  } else {
+    showToast("❌ Deletion function not found", "error");
+    console.error("❌ confirmDeleteAccount is not defined");
+  }
+};
+
+
+//------------
+
+// 🔄 Show confirmation modal
+window.clearAllSkills = async function () {
+  showConfirmModal({
+    title: "Clear All Skills",
+    message: "Are you sure you want to delete <b>all your uploaded skills</b>? This cannot be undone.",
+    onConfirm: async () => {
+      try {
+        const q = query(collection(db, "skills"), where("uid", "==", currentUid));
+        const snap = await getDocs(q);
+
+        if (snap.empty) return showToast("⚠️ No skills found to delete.");
+
+        const batch = writeBatch(db);
+        snap.forEach(doc => batch.delete(doc.ref));
+
+        await batch.commit();
+        showToast("🧹 All skills cleared.");
+        await loadSkills(currentUid);
+      } catch (err) {
+        console.error("❌ Failed to clear skills:", err);
+        showToast("❌ Failed to clear skills", "error");
+      }
+    }
+  });
+};
+//
+window.showConfirmModal = function ({ title, message, onConfirm }) {
+  const modal = document.getElementById("confirmModal");
+  const titleEl = document.getElementById("confirmModalTitle");
+  const messageEl = document.getElementById("confirmModalMessage");
+  const yesBtn = document.getElementById("confirmYesBtn");
+  const cancelBtn = document.getElementById("confirmCancelBtn");
+
+  titleEl.innerHTML = title || "Confirm";
+  messageEl.innerHTML = message || "Are you sure you want to proceed?";
+
+  modal.classList.remove("hidden");
+
+  // Clear old listeners
+  const newYesBtn = yesBtn.cloneNode(true);
+  yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+
+  const newCancelBtn = cancelBtn.cloneNode(true);
+  cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+  newYesBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    onConfirm();
+  });
+
+  newCancelBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+};
+
+//-----------------
+
+function openConfirmModal(title, message, onConfirm) {
+  const modal = document.getElementById("confirmModal");
+  const titleEl = document.getElementById("confirmModalTitle");
+  const messageEl = document.getElementById("confirmModalMessage");
+  const yesBtn = document.getElementById("confirmYesBtn");
+  const cancelBtn = document.getElementById("confirmCancelBtn");
+
+  if (!modal || !titleEl || !messageEl || !yesBtn || !cancelBtn) return;
+
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  modal.classList.remove("hidden");
+
+  const handler = () => {
+    modal.classList.add("hidden");
+    yesBtn.removeEventListener("click", handler);
+    onConfirm();
+  };
+
+  yesBtn.addEventListener("click", handler);
+
+  cancelBtn.onclick = () => {
+    modal.classList.add("hidden");
+    yesBtn.removeEventListener("click", handler);
+  };
+}
+
+//----------------
+
+
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => (window.location.href = "login.html"));
+});
+
+window.saveProfileInfo = async function () {
+  const newName = document.getElementById("profileNameInput").value.trim();
+  const course = document.getElementById("profileCourse").value.trim();
+  const dept = document.getElementById("profileDept").value.trim();
+  const college = document.getElementById("profileCollege").value.trim();
+  const university = document.getElementById("profileUniversity").value.trim();
+  const duration = document.getElementById("profileDuration").value.trim();
+
+  if (!newName) return showToast("❗ Name is required.", "error");
+
+  const data = {
+    displayName: newName,
+    course,
+    department: dept,
+    college,
+    university,
+    duration
+  };
+
+  try {
+    await setDoc(doc(db, "users", auth.currentUser.uid), data, { merge: true });
+
+    userName.textContent = newName;
+    document.getElementById("profileNameDisplay").textContent = newName;
+    showToast("✅ Profile details updated.");
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Failed to update profile.", "error");
+  }
+};
+
+
+//-----------------toast--------//
+
+function showToast(msg, type = "success") {
+  const toast = document.createElement("div");
+  toast.textContent = msg;
+  toast.className = `
+    fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50
+    px-5 py-3 rounded-lg text-white shadow-lg text-sm
+    ${type === "error" ? "bg-red-600" : "bg-green-600"}
+    opacity-0 transition-opacity duration-300 ease-out
+  `;
+
+  document.body.appendChild(toast);
+
+  // Trigger fade-in
+  requestAnimationFrame(() => {
+    toast.classList.add("opacity-100");
+  });
+
+  // Fade-out and remove after delay
+  setTimeout(() => {
+    toast.classList.remove("opacity-100");
+    toast.classList.add("opacity-0");
+    setTimeout(() => toast.remove(), 300); // match transition
+  }, 3000);
+}
+
+
+
+// ------------------- 🔁 Utility -------------------
+function getPreviewLink(link) {
+  const fileId = link.match(/[-\w]{25,}/)?.[0];
+  return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : link;
+}
+
+
+//---------------------
+
+const nameElem = document.getElementById("confirmSkillName");
+if (nameElem) {
+  nameElem.textContent = skillTitle;
+}
+
+//----------
+
+// 🔧 Resume Modal Functions (expose to global scope)
+window.openResumeModal = function () {
+  document.getElementById("resumeModal").classList.remove("hidden");
+  history.pushState(null, null, "#resume");
+};
+
+window.closeResumeModal = function () {
+  document.getElementById("resumeModal").classList.add("hidden");
+  if (location.hash === "#resume") history.back();
+};
+
+// 🌫️ Close on background click
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("resumeModal");
+  if (modal) {
+    modal.addEventListener("click", function (e) {
+      if (e.target === this) window.closeResumeModal();
+    });
+  }
+});
+
+// 📱 Support mobile back button
+window.addEventListener("popstate", () => {
+  const resumeModal = document.getElementById("resumeModal");
+  if (resumeModal && !resumeModal.classList.contains("hidden")) {
+    window.closeResumeModal();
+  }
+});
+
+///-----------------
+
+function getCertificatePreview(link, title = "certificate", fileName = "") {
+  if (!link) return `<p class="text-red-600 italic text-sm">No certificate uploaded.</p>`;
+
+  const previewLink = getPreviewLink(link);
+  const safeTitle = title.replace(/[^\w\s-]/g, "").replace(/\s+/g, "_");
+
+  let preview = "";
+
+  if (/\.(pdf)$/i.test(link) || link.includes("drive.google.com")) {
+    preview += `<iframe src="${previewLink}" class="w-full h-64 border rounded" allowfullscreen></iframe>`;
+  } else if (/\.(jpg|jpeg|png|webp)$/i.test(link)) {
+    preview += `<img src="${link}" class="w-full rounded shadow border" alt="Certificate">`;
+  }
+
+  preview += `
+    <p class="text-sm text-gray-500 mt-1 italic">📎 ${fileName || "Unknown File"}</p>
+    <div class="flex justify-between mt-2">
+      <a href="${link}" target="_blank" class="text-blue-600 underline">🔗 Open</a>
+      <a href="${getDownloadLink(link)}" download="${safeTitle}" class="text-green-600 underline">⬇️ Download</a>
+    </div>
+  `;
+  return preview;
+}
+
+//----------------
+
+function getDownloadLink(originalLink) {
+  const fileId = originalLink.match(/[-\w]{25,}/)?.[0];
+  return fileId
+    ? `https://drive.google.com/uc?export=download&id=${fileId}`
+    : originalLink;
+}
+
+//-----------------
+
+// Handle browser back button to close modal
+window.addEventListener("popstate", () => {
+  document.getElementById("detailModal")?.classList.add("hidden");
+  document.getElementById("skillModal")?.classList.add("hidden");
+  document.getElementById("confirmModal")?.classList.add("hidden");
+});
+
+// Push to history when modal is opened
+function showModalWithHistory(modalId) {
+  history.pushState({}, "modal");
+  document.getElementById(modalId).classList.remove("hidden");
+}
+//------------------------------
+
+window.toggleMenu = function (id, event) {
+  event.stopPropagation();
+
+  const targetMenu = document.getElementById(id);
+  const isAlreadyOpen = !targetMenu.classList.contains("hidden");
+
+  // Close all menus
+  document.querySelectorAll("[id^='menu-']").forEach(menu => menu.classList.add("hidden"));
+
+  // Toggle based on previous state
+  if (!isAlreadyOpen) {
+    targetMenu.classList.remove("hidden");
+  }
+};
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const skillLinkInput = document.getElementById("skillLink");
+  const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const infoTip = document.getElementById("linkInfoTip");
+
+  if (!skillLinkInput) return; // prevent crash if input is missing
+
+  const apiKey = "AIzaSyC6BWoxFtPcw2u0HKmeiBR4ytauTwp59RQ";
+
+  skillLinkInput.addEventListener("input", async () => {
+    const link = skillLinkInput.value.trim();
+    const fileId = extractDriveFileId(link);
+    infoTip.classList.toggle("hidden", !/drive\.google\.com/.test(link));
+
+    if (fileId) {
+      const fileName = await fetchDriveFileName(fileId, apiKey);
+      if (fileName) {
+        fileNameDisplay.textContent = `📄 File: ${fileName}`;
+        fileNameDisplay.classList.remove("hidden");
+      } else {
+        fileNameDisplay.textContent = "";
+        fileNameDisplay.classList.add("hidden");
+      }
+    } else {
+      fileNameDisplay.textContent = "";
+      fileNameDisplay.classList.add("hidden");
+    }
+  });
+});
+
+
+window.showSection = function (sectionId) {
+  const sections = ["skillsSection", "binSection", "profileSection", "settingsSection"];
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  });
+
+  const active = document.getElementById(sectionId);
+  if (active) active.classList.remove("hidden");
+
+  // Hide "no skills" message if not on skills page
+  if (sectionId !== "skillsSection") {
+    noSkillsMsg?.classList.add("hidden");
+  }
+
+  // Load specific section content
+  if (sectionId === "skillsSection") {
+    loadSkills(currentUid);
+  } else if (sectionId === "binSection") {
+    loadRecycleBin(currentUid);
+  } else if (sectionId === "settingsSection") {
+    loadSettings(currentUid);
+  }
+};
+
+
+// ------------------- 🔁 Modal Logic -------------------
+document.getElementById("openModalBtn").addEventListener("click", () => {
+  const form = document.getElementById("skillForm");
+
+  form.reset(); // Clear all inputs
+  document.getElementById("editingId").value = ""; // Clear edit ID
+  document.getElementById("fileNameDisplay").textContent = "";
+  document.getElementById("fileNameDisplay").classList.add("hidden");
+  document.getElementById("linkInfoTip").classList.add("hidden");
+
+  document.getElementById("skillModal").classList.remove("hidden");
+  history.pushState({}, "", "#add");
+});
+
+
+document.getElementById("closeModalBtn").addEventListener("click", () => {
+  document.getElementById("skillModal").classList.add("hidden");
+});
+
+document.getElementById("skillModal").addEventListener("click", (e) => {
+  if (e.target.id === "skillModal") e.target.classList.add("hidden");
+});
+
+// ------------------- 🔁 Skill Upload -------------------
+document.getElementById("skillForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const user = auth.currentUser;
+  const title = document.getElementById("skillTitle").value.trim();
+  if (!title) return showToast("⚠️ Skill title is required.");
+
+  const submitBtn = document.getElementById("submitSkillBtn");
+  submitBtn.disabled = true;
+
+  const link = document.getElementById("skillLink").value.trim();
+  const fileId = extractDriveFileId(link);
+  let certificateFileName = "";
+
+  // 🧠 Try to fetch certificate name
+  if (fileId) {
+    certificateFileName = await getDriveFileName(fileId, apiKey); // use your apiKey here
+  }
+
+  const data = {
+    title,
+    desc: document.getElementById("skillDesc").value.trim(),
+    link,
+    acquiredDate: document.getElementById("skillDate").value,
+    uid: user.uid,
+    timestamp: Date.now(),
+    certificateFileName // 📄 Include the file name
+  };
+
+  const id = document.getElementById("editingId").value;
+
+  try {
+    if (id) {
+      await updateDoc(doc(db, "skills", id), data);
+    } else {
+      const dupQuery = query(
+        collection(db, "skills"),
+        where("uid", "==", user.uid),
+        where("title", "==", title)
+      );
+      const dupSnap = await getDocs(dupQuery);
+      if (!dupSnap.empty) {
+        showToast("⚠️ A skill with this title already exists.", "error");
+        submitBtn.disabled = false;
+        return;
+      }
+
+      await addDoc(collection(db, "skills"), data);
+    }
+
+    showToast("✅ Skill saved!");
+    document.getElementById("skillForm").reset();
+    document.getElementById("editingId").value = "";
+    document.getElementById("skillModal").classList.add("hidden");
+    loadSkills(user.uid);
+  } catch (err) {
+    console.error("❌ Skill save error:", err);
+    showToast("❌ Failed to save skill", "error");
+  }
+
+  submitBtn.disabled = false;
+});
+
+//--------------------------------------
+
+async function viewSkill(skillDoc) {
+  const { title, desc, link, acquiredDate, timestamp } = skillDoc.data();
+  const fileId = extractDriveFileId(link);
+  let fileName = "";
+
+  // ✅ Fetch file name using Drive API if link is from Drive
+  if (fileId) {
+    fileName = await fetchDriveFileName(fileId, apiKey);
+  }
+
+  const preview = getCertificatePreview(link, title, fileName);
+
+  document.getElementById("modalContent").innerHTML = `
+    <h3 class="text-xl font-bold text-gray-800 mb-2">${title}</h3>
+    <p class="text-sm text-gray-600">${desc || "No description"}</p>
+    ${acquiredDate ? `<p class="text-sm text-gray-500 mt-1">Skill Acquired: ${acquiredDate}</p>` : ""}
+    <p class="text-sm text-gray-500 mt-1">Uploaded: ${formatDate(timestamp)}</p>
+    <div class="mt-4">${preview}</div>
+    <div class="mt-4 text-left">
+      <div class="border rounded px-2 py-1 inline-block">
+        <button onclick="editSkill('${skillDoc.id}', event)" class="text-sm text-purple-700 hover:underline">✏️ Edit</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("detailModal").classList.remove("hidden");
+  history.pushState(null, null, "#view");
+}
+
+
+// ------------------- 🔁 Skill Load -------------------
+let isLoadingSkills = false; // ⛔ prevent duplicate loads
+
+async function loadSkills(uid) {
+  if (isLoadingSkills) return;
+  isLoadingSkills = true;
+
+  skillsList.innerHTML = "";
+
+  const q = query(collection(db, "skills"), where("uid", "==", uid));
+  const snapshot = await getDocs(q);
+
+  const isVisible = !document.getElementById("skillsSection")?.classList.contains("hidden");
+  noSkillsMsg.classList.toggle("hidden", !(isVisible && snapshot.empty));
+
+snapshot.forEach(skillDoc => {
+  const data = skillDoc.data();
+  const menuId = `menu-${skillDoc.id}`;
+  const hasCertificate = data.link?.trim();
+  const uploadedDate = new Date(data.timestamp).toLocaleDateString();
+
+  const certBtn = hasCertificate
+    ? `<button onclick="viewCertificate('${skillDoc.id}', event)"
+         class="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-md shadow-sm hover:bg-blue-200 hover:shadow-md transition-all duration-200">
+         📄 View Certificate
+       </button>`
+    : "";
+
+  const skillCard = document.createElement("div");
+  skillCard.className = "p-4 border rounded shadow-sm bg-white cursor-pointer";
+
+  skillCard.innerHTML = `
+    <div class="relative space-y-3 text-gray-800">
+      <div>
+        <h3 class="font-semibold text-lg text-black">${data.title}</h3>
+        <p class="text-sm text-gray-700 mt-1 truncate">${data.desc || "No description"}</p>
+      </div>
+
+      <div class="flex flex-col items-center mt-2 space-y-2">
+        ${certBtn}
+        <div class="text-xs text-gray-500">Uploaded: ${uploadedDate}</div>
+      </div>
+
+      <div class="absolute top-2 right-2">
+        <button onclick="toggleMenu('${menuId}', event)"
+                class="text-xl p-2 rounded-full text-purple-800 hover:bg-purple-100 hover:text-purple-700 transition">
+          ⋮
+        </button>
+        <div id="${menuId}" class="hidden absolute right-0 mt-2 w-52 bg-white shadow-lg border border-purple-200 rounded-md z-50 overflow-hidden">
+          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                  onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">✏️ Edit Skill</button>
+          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                  onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">📄 Add/Update Certificate</button>
+          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                  onclick="removeCertificate('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">❌ Remove Certificate</button>
+          <button class="w-full px-4 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-600 text-left"
+                  onclick="deleteSkill('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">🗑️ Delete Skill</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+
+skillCard.addEventListener("click", async (event) => {
+  // ⛔ Prevent modal from opening when clicking on any inner button like ⋮, Edit, Delete
+  if (event.target.closest("button")) return;
+
+  const fileId = extractDriveFileId(data.link);
+  let fileName = "";
+
+  try {
+    if (fileId && fileNameCache[fileId]) {
+      fileName = fileNameCache[fileId];
+    } else if (fileId) {
+      fileName = await fetchDriveFileName(fileId, apiKey);
+      if (fileName) fileNameCache[fileId] = fileName;
+    }
+  } catch (err) {
+    console.error("❌ Failed to fetch file name:", err);
+  }
+
+  const preview = getCertificatePreview(data.link, data.title, fileName);
+
+  document.getElementById("modalContent").innerHTML = `
+    <h2 class="text-xl font-semibold">${data.title}</h2>
+    <p class="text-sm mt-2">${data.desc || "No description"}</p>
+    ${data.acquiredDate ? `<p class="text-sm mt-1 text-gray-600">Skill Acquired: ${data.acquiredDate}</p>` : ""}
+    <p class="text-sm text-gray-500 mt-1">Uploaded: ${uploadedDate}</p>
+    ${preview}
+    <div class="mt-4">
+      <div class="border border-purple-200 rounded-md p-2 bg-purple-50 text-left w-fit">
+        <button onclick="editSkill('${skillDoc.id}', event)" class="text-sm text-purple-700 hover:underline">
+          ✏️ Edit
+        </button>
+      </div>
+    </div>
+  `;
+
+  showModalWithHistory("detailModal");
+});
+
+
+    skillsList.appendChild(skillCard);
+  });
+
+  isLoadingSkills = false;
+}
+
+//------------------
+
+document.addEventListener("click", (e) => {
+  const allMenus = document.querySelectorAll("[id^='menu-']");
+  allMenus.forEach(menu => {
+    if (!menu.contains(e.target) && !menu.previousElementSibling.contains(e.target)) {
+      menu.classList.add("hidden");
+    }
+  });
+});
+
+//----------------settings-------------------------
+async function loadSettings(uid) {
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  const settingsSection = document.getElementById("settingsSection");
+  if (!settingsSection) return;
+
+  // Clear any previous dynamic content except the action buttons
+  settingsSection.innerHTML = `
+    <section class="px-4 py-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">⚙️ Settings</h2>
+
+      <div id="profileSettingsCard" class="mb-6"></div>
+
+      <!-- 🔄 Clear All Skills -->
+      <button onclick="clearAllSkills()" class="w-full bg-yellow-200 hover:bg-yellow-400 text-yellow-800 font-semibold py-2 rounded mb-4">
+        🧹 Clear All Skills
+      </button>
+
+      <!-- ❌ Delete Account -->
+      <button onclick="confirmDelete()" class="w-full bg-red-700 hover:bg-red-900 text-white px-4 py-2 rounded shadow">
+        🧨 Delete My Account
+      </button>
+    </section>
+  `;
+
+  const profileSettingsCard = document.getElementById("profileSettingsCard");
+
+  if (!userSnap.exists()) {
+    profileSettingsCard.innerHTML = `<p class="text-gray-500 text-sm">No profile data found.</p>`;
+    return;
+  }
+
+  const userData = userSnap.data();
+
+  profileSettingsCard.innerHTML = `
+    <div class="p-4 border rounded bg-white shadow-sm text-black">
+      <h3 class="text-lg font-semibold mb-2">👤 Profile Info</h3>
+      <p class="text-sm text-gray-700"><b>Name:</b> ${userData.displayName || "Not set"}</p>
+      <p class="text-sm text-gray-700"><b>Course:</b> ${userData.course || "Not set"}</p>
+      <p class="text-sm text-gray-700"><b>Department:</b> ${userData.department || "Not set"}</p>
+      <p class="text-sm text-gray-700"><b>College:</b> ${userData.college || "Not set"}</p>
+      <p class="text-sm text-gray-700"><b>University:</b> ${userData.university || "Not set"}</p>
+      <p class="text-sm text-gray-700"><b>Duration:</b> ${userData.duration || "Not set"}</p>
+      <div class="flex justify-end mt-3">
+       <button onclick="showSection('profileSection')" class="text-purple-600 hover:underline text-sm">✏️ Edit Profile</button>
+      </div>
+    </div>
+  `;
+}
+//----------------confirm acccount dlt----------
+window.confirmDeleteAccount = async function () {
+  const user = auth.currentUser;
+  if (!user) {
+    showToast("⚠️ No user logged in", "error");
+    return;
+  }
+
+  try {
+    // 1️⃣ Delete all skills
+    const skillQuery = query(collection(db, "skills"), where("uid", "==", user.uid));
+    const snap = await getDocs(skillQuery);
+
+    if (!snap.empty) {
+      const batch = writeBatch(db);
+      snap.forEach(doc => batch.delete(doc.ref));
+      await batch.commit();
+    }
+
+    // 2️⃣ Delete user profile
+    await deleteDoc(doc(db, "users", user.uid));
+
+    // 3️⃣ Delete Firebase Auth account
+    await deleteUser(user);
+
+    // 4️⃣ Success message and redirect
+    showToast("✅ Account deleted successfully. Goodbye!");
+    location.href = "login.html";
+
+  } catch (err) {
+    console.error("❌ Delete account failed:", err);
+    if (err.code === "auth/requires-recent-login") {
+      showToast("⚠️ Session expired. Please logout and login again.", "error");
+    } else {
+      showToast("❌ Something went wrong", "error");
+    }
+  }
+};
+
+
+
+// ------------------- 🔁 Recycle Bin -------------------
+async function loadRecycleBin(uid) {
+  binList.innerHTML = "";
+  const q = query(collection(db, "recycle_bin"), where("uid", "==", uid));
+  const snap = await getDocs(q);
+
+  document.getElementById("noBinMsg").classList.toggle("hidden", !snap.empty);
+
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+    const card = document.createElement("div");
+    card.className = "p-4 border rounded bg-white shadow-sm text-black";
+
+    card.innerHTML = `
+      <h3 class="text-lg font-semibold">${data.title}</h3>
+      <p class="text-sm text-gray-600">${data.desc || "No description"}</p>
+      <p class="text-xs text-gray-400">Deleted: ${new Date(data.deletedAt).toLocaleDateString()}</p>
+      <div class="flex justify-end gap-4 mt-3">
+        <button onclick="recoverSkill('${docSnap.id}')" class="text-green-600 hover:underline">♻️ Recover</button>
+        <button onclick="deleteForever('${docSnap.id}', \`${data.title.replace(/`/g, "\\`")}\`)" class="text-red-600 hover:underline">🗑️ Permanently Delete</button>
+      </div>
+    `;
+    binList.appendChild(card);
+  });
+}
+
+window.recoverSkill = async function (binId) {
+  try {
+    const binRef = doc(db, "recycle_bin", binId);
+    const binSnap = await getDoc(binRef);
+    if (!binSnap.exists()) return showToast("❌ Skill not found in bin", "error");
+
+    const binData = binSnap.data();
+    const originalId = binData.originalId || binId;
+
+    const skillRef = doc(db, "skills", originalId);
+    const skillSnap = await getDoc(skillRef);
+
+    const restoredData = {
+      ...binData,
+      uid: currentUid,
+      timestamp: Date.now()
+    };
+    delete restoredData.deletedAt;
+    delete restoredData.originalId;
+
+    if (skillSnap.exists()) {
+      const newRef = doc(collection(db, "skills")); // auto ID
+      await setDoc(newRef, restoredData);
+      showToast("⚠️ Original skill exists. Added a new copy.");
+    } else {
+      await setDoc(skillRef, restoredData);
+      showToast("✅ Skill recovered successfully.");
+    }
+
+    await deleteDoc(binRef);
+    await loadSkills(currentUid);
+    await loadRecycleBin(currentUid);
+  } catch (err) {
+    console.error("❌ Recovery error:", err);
+    showToast("❌ Failed to recover skill", "error");
+  }
+};
+// 🗑️ Move Skill to Recycle Bin
+window.deleteSkill = async function (id, event, title) {
+  event?.stopPropagation?.();
+
+  showConfirm(`Delete "${title}"?`, async () => {
+    try {
+      const ref = doc(db, "skills", id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return showToast("❌ Skill not found", "error");
+
+      const data = snap.data();
+
+      // Backup to recycle bin
+      await setDoc(doc(db, "recycle_bin", id), {
+        ...data,
+        deletedAt: Date.now(),
+        uid: currentUid,
+        originalId: id
+      });
+
+      await deleteDoc(ref);
+
+      showToast("🗑️ Moved to Recycle Bin");
+      await loadSkills(currentUid);
+      await loadRecycleBin(currentUid);
+    } catch (err) {
+      console.error("❌ Delete error:", err);
+      showToast("❌ Failed to delete skill", "error");
+    }
+  });
+};
+
+
+// ❌ Permanently delete from Recycle Bin
+window.deleteForever = function (id, title) {
+  showConfirm(`Delete "${title}" permanently?`, async () => {
+    try {
+      await deleteDoc(doc(db, "recycle_bin", id));
+      showToast("🗑️ Deleted permanently");
+      await loadRecycleBin(currentUid);
+    } catch (err) {
+      console.error("❌ Permanent delete error:", err);
+      showToast("❌ Failed to delete", "error");
+    }
+  });
+};
+
+//---------
+window.closeMenu = function (id) {
+  const el = document.getElementById(id);
+  if (el && !el.classList.contains("hidden")) {
+    el.classList.add("hidden");
+     // Trigger back popstate if added
+  }
+};
+
+//---------------
+// ✅ Alias to use openConfirmModal with showConfirm-style interface
+window.showConfirm = function (title, messageOrCallback, callback) {
+  let message = "Are you sure?";
+  let confirmCallback = callback;
+
+  // If only two arguments and second is a function
+  if (typeof messageOrCallback === "function") {
+    confirmCallback = messageOrCallback;
+  } else {
+    message = messageOrCallback;
+  }
+
+  openConfirmModal(title, message, confirmCallback);
+};
+
+
+// 📄 Remove Certificate from Skill
+window.removeCertificate = function (id, event, title) {
+  event?.stopPropagation?.();
+
+  showConfirm(`Remove the certificate from "${title}"?`, async () => {
+    try {
+      await updateDoc(doc(db, "skills", id), { link: "" });
+      showToast("📄 Certificate removed");
+      await loadSkills(currentUid);
+    } catch (err) {
+      console.error("❌ Certificate removal error:", err);
+      showToast("❌ Failed to remove certificate", "error");
+    }
+  });
+};
+
+// ❗ Don't forget to define `editSkill()` externally
+window.editSkill = async function (id, e) {
+  e.stopPropagation(); // Prevent card click
+  try {
+    const ref = doc(db, "skills", id);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) return showToast("Skill not found.");
+
+    const data = snap.data();
+
+    // Populate modal inputs
+    document.getElementById("skillTitle").value = data.title || "";
+    document.getElementById("skillDesc").value = data.desc || "";
+    document.getElementById("skillLink").value = data.link || "";
+    document.getElementById("skillDate").value = data.acquiredDate || "";
+    document.getElementById("editingId").value = id;
+
+    // Show the modal
+    document.getElementById("skillModal").classList.remove("hidden");
+  } catch (err) {
+    console.error("❌ Error loading skill for editing:", err);
+    showToast("Failed to load skill.");
+  }
+};
+
+
+</script>
+<!-- Your other <script src="..."> tags -->
+<script>
+  // 🟢 Handle modal click outside to close
+  const modals = [
+    { modal: "skillModal", box: "skillForm" },
+    { modal: "detailModal", box: "modalContent" },
+    { modal: "confirmModal", box: "confirmModal" }
+  ];
+
+  modals.forEach(({ modal, box }) => {
+    const modalEl = document.getElementById(modal);
+    if (!modalEl) return;
+
+    modalEl.addEventListener("click", (e) => {
+      const insideBox = modalEl.querySelector(`#${box}`) || modalEl.querySelector("form") || modalEl.querySelector("div");
+      if (insideBox && !insideBox.contains(e.target)) {
+        modalEl.classList.add("hidden");
+        if (modal === "detailModal") history.back();
+      }
+    });
+  });
+
+  // 🔙 Close modals on back button
+  window.addEventListener("popstate", () => {
+    ["detailModal", "skillModal", "confirmModal"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
+  });
+
+  // 🔍 Extract Drive File ID
+ function extractDriveFileId(link) {
+  const match = link.match(/\/d\/([-\w]{25,})/) || link.match(/[-\w]{25,}/);
+  return match ? match[1] || match[0] : null;
+}
+
+async function getDriveFileName(fileId, apiKey) {
+  try {
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?fields=name&key=${apiKey}`);
+    if (!res.ok) throw new Error("API Error");
+
+    const data = await res.json();
+    return data.name;
+  } catch (error) {
+    console.error("❌ Failed to fetch file name:", error);
+    return "Unknown File";
+  }
+}
+
+
+
+
+  // 📄 Fetch file name from Google Drive
+  async function fetchDriveFileMeta(fileId, apiKey) {
+  if (fileCache.has(fileId)) return fileCache.get(fileId);
+
+  try {
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?fields=name,mimeType&key=${apiKey}`);
+    if (!res.ok) throw new Error("API Error");
+
+    const data = await res.json();
+    const fileType = data.mimeType.includes("pdf")
+      ? "pdf"
+      : data.mimeType.startsWith("image/")
+        ? "image"
+        : "other";
+
+    const result = { name: data.name, type: fileType };
+    fileCache.set(fileId, result); // ✅ Cache it
+    return result;
+  } catch (err) {
+    console.error("❌ Failed to fetch file metadata:", err);
+    return null;
+  }
+}
+
+
+  // 🌐 Link field listener
+  const skillLinkInput = document.getElementById("skillLink");
+  const fileNameDisplay = document.getElementById("fileNameDisplay");
+  const infoTip = document.getElementById("linkInfoTip");
+const apiKey = "AIzaSyC6BWoxFtPcw2u0HKmeiBR4ytauTwp59RQ";
+
+  skillLinkInput.addEventListener("input", async () => {
+    const link = skillLinkInput.value.trim();
+    const fileId = extractDriveFileId(link);
+
+    // Show or hide info tip
+    infoTip.classList.toggle("hidden", !/drive\.google\.com/.test(link));
+
+    // Try to get file name from API
+    if (fileId) {
+      const fileName = await fetchDriveFileName(fileId, apiKey);
+      if (fileName) {
+        fileNameDisplay.textContent = `📄 File: ${fileName}`;
+        fileNameDisplay.classList.remove("hidden");
+      } else {
+        fileNameDisplay.classList.add("hidden");
+        fileNameDisplay.textContent = "";
+      }
+    } else {
+      fileNameDisplay.classList.add("hidden");
+      fileNameDisplay.textContent = "";
+    }
+  });
+
+  async function fetchDriveFileName(fileId, apiKey) {
+  const meta = await fetchDriveFileMeta(fileId, apiKey);
+  return meta?.name || "";
+}
+
+function openConfirmModal(title, message, onConfirm) {
+  document.getElementById("confirmTitle").textContent = title;
+  document.getElementById("confirmMessage").textContent = message;
+
+  const yesBtn = document.getElementById("confirmYesBtn");
+  yesBtn.onclick = async () => {
+    closeConfirmModal();
+    await onConfirm();
+  };
+
+  document.getElementById("confirmModal").classList.remove("hidden");
+}
+
+function closeConfirmModal() {
+  document.getElementById("confirmModal").classList.add("hidden");
+}
+document.addEventListener("DOMContentLoaded", () => {
+  // define window.confirmDeleteAccount inside this
+
+window.confirmDeleteAccount = async function () {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const skillQuery = query(collection(db, "skills"), where("uid", "==", user.uid));
+    const snap = await getDocs(skillQuery);
+    const batch = writeBatch(db);
+    snap.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+
+    await deleteDoc(doc(db, "users", user.uid));
+    await deleteUser(user);
+
+    showToast("✅ Account deleted successfully. Goodbye!");
+    location.href = "login.html";
+  } catch (err) {
+    console.error("❌ Delete account failed:", err);
+    if (err.code === "auth/requires-recent-login") {
+      showToast("⚠️ Please login again to delete your account", "error");
+    } else {
+      showToast("❌ Something went wrong", "error");
+    }
+  }
+};
+});
+
+
+
+
+
+</script>
+
+<script type="module">
+  // ✅ Add this AFTER modal HTML is defined
+
+  document.getElementById("confirmDeleteAccountBtn").addEventListener("click", async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        showToast("⚠️ User not logged in.", "error");
+        return;
+      }
+
+      // 🧹 Step 1: Delete user's skills from Firestore
+      const skillSnap = await getDocs(query(collection(db, "skills"), where("uid", "==", user.uid)));
+      const deletePromises = skillSnap.docs.map(docSnap => deleteDoc(doc(db, "skills", docSnap.id)));
+      await Promise.all(deletePromises);
+
+      // 🧹 Step 2: Delete user's profile from Firestore
+      await deleteDoc(doc(db, "users", user.uid));
+
+      // 🧨 Step 3: Delete Firebase Auth account
+      await deleteUser(user);
+
+      // ✅ Step 4: Redirect to login with toast
+      showToast("✅ Your account has been deleted.", "success");
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+
+    } catch (err) {
+      console.error("❌ Account deletion failed:", err);
+      if (err.code === "auth/requires-recent-login") {
+        showToast("⚠️ Please log in again to delete your account.", "error");
+      } else {
+        showToast("❌ Failed to delete account.", "error");
+      }
+    } finally {
+      closeDeleteModal();
+    }
+  });
+</script>
+
+
+<!-- 🔹 Add Skill Modal -->
+<div id="skillModal" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 hidden flex items-center justify-center transition-opacity duration-200">
+  <div class="bg-white rounded-xl p-6 w-11/12 max-w-md shadow-xl relative text-gray-800">
+    <!-- Close Button -->
+    <button id="closeModalBtn" class="absolute top-3 right-4 text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
+
+<!-- Heading -->
+<h2 class="text-2xl font-semibold mb-5 text-purple-800">➕ Add Skill</h2>
+
+<!-- Skill Form -->
+<form id="skillForm" class="space-y-4">
+  <input type="text" id="skillTitle" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
+    placeholder="Skill Title" required />
+
+  <textarea id="skillDesc" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
+    placeholder="Skill Description (optional)"></textarea>
+
+  <input type="date" id="skillDate" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400" />
+
+  <!-- 📄 Certificate Link Input -->
+  <input type="url" id="skillLink" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
+    placeholder="Certificate Link (optional)" />
+
+  <!-- 🟡 Info Tip -->
+  <div id="linkInfoTip" class="text-xs text-yellow-800 bg-yellow-100 border border-yellow-300 p-2 rounded hidden">
+    🔒 Make sure the file is shared as <b>“Anyone with the link can view”</b> in Google Drive.
+  </div>
+
+  <!-- 📄 File Name Output -->
+  <div id="fileNameDisplay" class="text-sm text-gray-700 italic hidden"></div>
+
+  <!-- Hidden for editing -->
+  <input type="hidden" id="editingId" />
+
+  <!-- Submit Button -->
+  <button id="submitSkillBtn" type="submit"
+    class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition">
+    Save Skill
+  </button>
+</form>
+
+  </div>
+</div>
+
+<!-- 🔍 Detail Modal -->
+<div id="detailModal" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 hidden flex items-center justify-center">
+  <div class="bg-white p-6 rounded-xl max-w-md w-11/12 relative text-gray-800 shadow-lg">
+    <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="absolute top-3 right-4 text-xl text-gray-500 hover:text-red-500 font-bold">✖</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+
+<!-- ✅ General Purpose Confirm Modal -->
+<div id="confirmModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden flex items-center justify-center">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm text-center relative">
+    <h3 id="confirmModalTitle" class="text-xl font-semibold text-purple-800 mb-2">Confirm</h3>
+    <p id="confirmModalMessage" class="text-gray-700 mb-4">Are you sure you want to proceed?</p>
+    <div class="flex justify-center gap-4">
+      <button id="confirmYesBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">Yes</button>
+      <button id="confirmCancelBtn" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded shadow">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ❌ Delete Account Modal -->
+<div id="deleteAccountModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
+    <h3 class="text-xl font-bold text-red-700 mb-2">Delete Your Account?</h3>
+    <p class="text-gray-700 mb-4">This action is <strong>permanent</strong> and cannot be undone.</p>
+    <div class="flex justify-center gap-4">
+      <button onclick="confirmDeleteAccount()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded shadow">Delete</button>
+      <button onclick="closeDeleteModal()" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded shadow">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- 🔐 Re-auth Modal -->
+<div id="reauthModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-sm text-center relative">
+    <h3 class="text-xl font-semibold text-purple-800 mb-2">🔐 Re-authenticate</h3>
+    <p class="text-gray-700 mb-4">Please re-enter your password to confirm account deletion.</p>
+    <input type="password" id="reauthPassword" class="w-full border px-3 py-2 rounded mb-4" placeholder="Password" />
+    <div class="flex justify-center gap-4">
+      <button onclick="performReauth()" class="bg-purple-600 text-white px-4 py-2 rounded">Confirm</button>
+      <button onclick="document.getElementById('reauthModal').classList.add('hidden')" class="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
