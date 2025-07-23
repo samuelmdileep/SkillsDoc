@@ -95,6 +95,8 @@ model.save_pretrained("./resume_t5_model")
 tokenizer.save_pretrained("./resume_t5_model")
 ✅ Download the final model: resume_t5_model.zip (also used in frontend)
 
+
+////////////////////
 ⚙️ How to Run Locally
 Clone the repo:
 
