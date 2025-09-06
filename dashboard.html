@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <title>SkillsDoc – Your Skills, Documented</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SkillsDoc Dashboard</title>
@@ -17,7 +19,9 @@
 <!-- Sidebar -->
 <aside id="sidebar" class="bg-gradient-to-b from-purple-800 via-purple-700 to-purple-900 text-white w-64 h-screen p-6 pt-16 space-y-6 fixed z-40 top-0 left-0 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
   <div class="flex flex-col items-center text-center space-y-2">
-    <img id="profilePic" class="w-20 h-20 rounded-full border shadow object-cover" src="https://ui-avatars.com/api/?name=User" alt="User">
+    <img class="profile-pic w-20 h-20 rounded-full border shadow object-cover" 
+     src="https://ui-avatars.com/api/?name=User" alt="User">
+
     <p id="userName" class="text-sm font-semibold text-white">User</p>
     <p class="text-xs text-purple-200 italic px-2 text-center">“Education is a treasure that no one can steal.”</p>
   </div>
@@ -29,13 +33,14 @@
     <button onclick="showSection('settingsSection')"class="text-left text-white hover:text-purple-300 font-medium">⚙️ Settings</button>
 
     <button id="logoutBtn" class="text-left text-white hover:text-red-300 font-medium">🚪 Logout</button>
-    <!-- 📜 Terms & Conditions Footer Link + Rights -->
+   <!-- 📜 Terms & Conditions Footer Link + Rights -->
 <div class="absolute bottom-4 left-6 w-52 text-[11px] text-purple-300 leading-tight text-center">
   <a href="terms.html" class="italic underline hover:text-purple-100 transition block mb-1">
     📜 Terms & Conditions
   </a>
   <p class="text-[10px] not-italic">© 2025 SkillsDoc. All rights reserved.</p>
 </div>
+
 
   </nav>
 </aside>
@@ -46,30 +51,27 @@
 <!-- Main Content -->
 <main class="ml-0 md:ml-64 px-4 pt-6 pb-8 bg-purple-900 text-white transition-all duration-300 min-h-screen">
 
-  
-
-<!-- Resume Modal -->
-<div id="resumeModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center hidden">
-  <div class="bg-white p-6 rounded-xl shadow-xl w-11/12 max-w-md relative animate-fadeIn">
-    <button onclick="closeResumeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-lg">✖️</button>
-    <h3 class="text-xl font-bold text-purple-700 mb-2">🚧 Under Development</h3>
-    <p class="text-gray-700">Resume generation feature is coming soon. Stay tuned!</p>
-  </div>
-</div>
-
-  <!-- 🟢 My Skills Section -->
 <div id="skillsSection" class="space-y-6">
-  <!-- Top Header -->
-<div class="mb-4 flex justify-between items-center">
-  <h2 class="text-2xl font-bold text-purple-200 mb-4">📄 My Skills</h2>
-  <button onclick="openResumeModal()"
-    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md transition-all duration-200">
-    📝 Generate Resume
-  </button>
-</div>
-  
+  <div class="flex items-center gap-4">
+
+    <h2 class="text-2xl font-bold text-purple-200 flex-shrink-0">📄 My Skills</h2>
+
+    <div class="flex-grow">
+      <input
+        type="text"
+        id="searchBar"
+        list="skill-suggestions"
+        placeholder="Search your skills..."
+        class="w-full p-3 border-transparent rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-purple-100 text-gray-800 placeholder-gray-500"
+      />
+    </div>
+
+    <a href="resume.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md transition-all duration-200 inline-block whitespace-nowrap flex-shrink-0">
+      📝 Generate Resume
+    </a>
+  </div>
   <!-- Skill Cards List -->
-  <div id="skillsList" class="space-y-4">
+ <div id="skillsList" class="space-y-4 mt-8">
     <!-- JS will inject skill cards here -->
   </div>
 
@@ -115,8 +117,9 @@
   <div class="bg-white p-6 rounded-lg shadow max-w-2xl mx-auto space-y-6 text-black">
 
     <div class="flex items-center gap-6">
-      <img id="profilePic" src="https://ui-avatars.com/api/?name=User" alt="Profile Picture"
-        class="w-20 h-20 rounded-full border shadow object-cover" />
+     <img class="profile-pic w-20 h-20 rounded-full border shadow object-cover" 
+     src="https://ui-avatars.com/api/?name=User" alt="Profile Picture" />
+
       <div class="space-y-1">
         <h3 id="profileNameDisplay" class="text-lg font-semibold">User</h3>
         <p class="text-sm text-gray-600">Logged in via Google</p>
@@ -128,13 +131,17 @@
       <div>
         <label class="block text-sm font-medium">Display Name</label>
         <input type="text" id="profileNameInput"
-          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500" />
+          class="w-full mt-1 px-3 py-2 border rounded shadow-sm bg-white text-black placeholder-gray-500"
+          placeholder="Enter your display name"
+          title="Display Name" />
       </div>
 
       <div>
         <label class="block text-sm font-medium">Email</label>
         <input type="email" id="profileEmail" readonly
-          class="w-full mt-1 px-3 py-2 border rounded bg-gray-100 text-black shadow-sm" />
+          class="w-full mt-1 px-3 py-2 border rounded bg-gray-100 text-black shadow-sm"
+          placeholder="Your email address"
+          title="Email Address" />
       </div>
 
       <div>
@@ -248,11 +255,35 @@ const confirmModal = document.getElementById("confirmModal");
 const confirmMessage = document.getElementById("confirmMessage");
 
 let currentUid = null;
+// ✨ New helper function to keep UI updates organized
+function updateProfileUI(user, data) {
+  const displayName = data.displayName || user.displayName || "User";
+  const photoURL = user.photoURL || data.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}`;
+
+  // Update elements in the sidebar and profile page
+  userName.textContent = displayName;
+  document.getElementById("profileNameDisplay").textContent = displayName;
+  
+  // Note: It's better to use unique IDs for each image
+  document.querySelectorAll(".profile-pic").forEach(img => {
+    img.src = photoURL;
+    img.alt = displayName;
+  });
+
+  // Populate profile form fields
+  document.getElementById("profileNameInput").value = displayName;
+  document.getElementById("profileEmail").value = user.email || "N/A";
+  document.getElementById("profileUniversity").value = data.university || "";
+  document.getElementById("profileCourse").value = data.course || "";
+  document.getElementById("profileDept").value = data.department || "";
+  document.getElementById("profileCollege").value = data.college || "";
+  document.getElementById("profileDuration").value = data.duration || "";
+}
 
 // ------------------- 🔁 Auth & Profile -------------------
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "index.html";
+    window.location.href = "login.html";
     return;
   }
 
@@ -262,41 +293,21 @@ onAuthStateChanged(auth, async (user) => {
   const userDoc = await getDoc(doc(db, "users", user.uid));
   const data = userDoc.exists() ? userDoc.data() : {};
 
-  // Update UI with profile data or fallback to auth
-  const displayName = data.displayName || user.displayName || "User";
-  const photoURL = data.photoURL || user.photoURL || "https://ui-avatars.com/api/?name=User";
+  // ✅ Call the new function to handle all UI updates
+  updateProfileUI(user, data);
 
-  userName.textContent = displayName;
-  document.getElementById("profileNameInput").value = displayName;
-  document.getElementById("profileEmail").value = user.email || "N/A";
-  document.getElementById("profileUniversity").value = data.university|| "";
-  document.getElementById("profileNameDisplay").textContent = displayName|| "";
-
-  document.querySelectorAll("#profilePic").forEach(img => {
-    img.src = photoURL;
-    img.alt = displayName;
-  }); // ✅ this closing brace was missing
-
-  // ✅ Now this will run properly
-  document.getElementById("profileCourse").value = data.course || "";
-  document.getElementById("profileDept").value = data.department || "" ;
-  document.getElementById("profileCollege").value = data.college|| "";
-  
-  document.getElementById("profileDuration").value = data.duration|| "" ;
-
-  // Load skills
+  // Load initial content
   loadSkills(currentUid);
-
-  // Show dashboard section
   showSection("skillsSection");
 });
 
 //--------------------------------------------------
 
 
-function showSection(sectionId) {
+window.showSection = function (sectionId)
+ {
   const sections = ["skillsSection", "profileSection", "binSection", "settingsSection"];
-  const buttons = document.querySelectorAll("aside nav button[data-nav]");
+  const buttons = document.querySelectorAll("aside nav button");
 
   // Hide all sections
   sections.forEach(id => {
@@ -304,20 +315,30 @@ function showSection(sectionId) {
     if (section) section.classList.add("hidden");
   });
 
-  // Reset button highlights
-  buttons.forEach(btn => btn.classList.remove("bg-purple-600", "text-white"));
-
   // Show the selected section
   const target = document.getElementById(sectionId);
   if (target) target.classList.remove("hidden");
 
-  // Highlight active button
-  const clickedBtn = [...buttons].find(btn => btn.getAttribute("onclick")?.includes(sectionId));
-  if (clickedBtn) clickedBtn.classList.add("bg-purple-600", "text-white");
+  // --- CRITICAL STEP ADDED BELOW ---
+  // After showing a section, load its specific content from the database.
+  if (sectionId === "skillsSection") {
+    loadSkills(currentUid);
+  } else if (sectionId === "binSection") {
+    loadRecycleBin(currentUid);
+  } else if (sectionId === "settingsSection") {
+    loadSettings(currentUid);
+  }
+
+  // --- Button Highlighting Logic ---
+  buttons.forEach(btn => {
+    if (!btn.id.includes("logoutBtn")) {
+      btn.classList.remove("bg-purple-600");
+    }
+    if (btn.getAttribute("onclick")?.includes(sectionId)) {
+      btn.classList.add("bg-purple-600");
+    }
+  });
 }
-
-
-
 //------------------
 
 // 🟣 Open Delete Modal (Globally Accessible)
@@ -435,7 +456,7 @@ window.showConfirmModal = function ({ title, message, onConfirm }) {
   });
 };
 
-//-----------------
+
 
 function openConfirmModal(title, message, onConfirm) {
   const modal = document.getElementById("confirmModal");
@@ -468,7 +489,7 @@ function openConfirmModal(title, message, onConfirm) {
 
 
 logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => (window.location.href = "index.html"));
+  signOut(auth).then(() => (window.location.href = "login.html"));
 });
 
 window.saveProfileInfo = async function () {
@@ -546,38 +567,6 @@ if (nameElem) {
   nameElem.textContent = skillTitle;
 }
 
-//----------
-
-// 🔧 Resume Modal Functions (expose to global scope)
-window.openResumeModal = function () {
-  document.getElementById("resumeModal").classList.remove("hidden");
-  history.pushState(null, null, "#resume");
-};
-
-window.closeResumeModal = function () {
-  document.getElementById("resumeModal").classList.add("hidden");
-  if (location.hash === "#resume") history.back();
-};
-
-// 🌫️ Close on background click
-document.addEventListener("DOMContentLoaded", () => {
-  const modal = document.getElementById("resumeModal");
-  if (modal) {
-    modal.addEventListener("click", function (e) {
-      if (e.target === this) window.closeResumeModal();
-    });
-  }
-});
-
-// 📱 Support mobile back button
-window.addEventListener("popstate", () => {
-  const resumeModal = document.getElementById("resumeModal");
-  if (resumeModal && !resumeModal.classList.contains("hidden")) {
-    window.closeResumeModal();
-  }
-});
-
-///-----------------
 
 function getCertificatePreview(link, title = "certificate", fileName = "") {
   if (!link) return `<p class="text-red-600 italic text-sm">No certificate uploaded.</p>`;
@@ -673,32 +662,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-
-
-window.showSection = function (sectionId) {
-  const sections = ["skillsSection", "binSection", "profileSection", "settingsSection"];
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add("hidden");
-  });
-
-  const active = document.getElementById(sectionId);
-  if (active) active.classList.remove("hidden");
-
-  // Hide "no skills" message if not on skills page
-  if (sectionId !== "skillsSection") {
-    noSkillsMsg?.classList.add("hidden");
-  }
-
-  // Load specific section content
-  if (sectionId === "skillsSection") {
-    loadSkills(currentUid);
-  } else if (sectionId === "binSection") {
-    loadRecycleBin(currentUid);
-  } else if (sectionId === "settingsSection") {
-    loadSettings(currentUid);
-  }
-};
 
 
 // ------------------- 🔁 Modal Logic -------------------
@@ -828,6 +791,7 @@ async function loadSkills(uid) {
   isLoadingSkills = true;
 
   skillsList.innerHTML = "";
+  noSkillsMsg.classList.add("hidden"); // hide initially
 
   const q = query(collection(db, "skills"), where("uid", "==", uid));
   const snapshot = await getDocs(q);
@@ -835,92 +799,89 @@ async function loadSkills(uid) {
   const isVisible = !document.getElementById("skillsSection")?.classList.contains("hidden");
   noSkillsMsg.classList.toggle("hidden", !(isVisible && snapshot.empty));
 
-snapshot.forEach(skillDoc => {
-  const data = skillDoc.data();
-  const menuId = `menu-${skillDoc.id}`;
-  const hasCertificate = data.link?.trim();
-  const uploadedDate = new Date(data.timestamp).toLocaleDateString();
+  snapshot.forEach(skillDoc => {
+    const data = skillDoc.data();
+    const menuId = `menu-${skillDoc.id}`;
+    const hasCertificate = data.link?.trim();
+    const uploadedDate = new Date(data.timestamp).toLocaleDateString();
 
-  const certBtn = hasCertificate
-    ? `<button onclick="viewCertificate('${skillDoc.id}', event)"
-         class="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-md shadow-sm hover:bg-blue-200 hover:shadow-md transition-all duration-200">
-         📄 View Certificate
-       </button>`
-    : "";
+    const certBtn = hasCertificate
+      ? `<button onclick="viewCertificate('${skillDoc.id}', event)"
+           class="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-md shadow-sm hover:bg-blue-200 hover:shadow-md transition-all duration-200">
+           📄 View Certificate
+         </button>`
+      : "";
 
-  const skillCard = document.createElement("div");
-  skillCard.className = "p-4 border rounded shadow-sm bg-white cursor-pointer";
+    const skillCard = document.createElement("div");
+    skillCard.className = "p-4 border rounded shadow-sm bg-white cursor-pointer";
 
-  skillCard.innerHTML = `
-    <div class="relative space-y-3 text-gray-800">
-      <div>
-        <h3 class="font-semibold text-lg text-black">${data.title}</h3>
-        <p class="text-sm text-gray-700 mt-1 truncate">${data.desc || "No description"}</p>
-      </div>
+    skillCard.innerHTML = `
+      <div class="relative space-y-3 text-gray-800">
+        <div>
+          <h3 class="font-semibold text-lg text-black">${data.title}</h3>
+          <p class="text-sm text-gray-700 mt-1 truncate">${data.desc || "No description"}</p>
+        </div>
 
-      <div class="flex flex-col items-center mt-2 space-y-2">
-        ${certBtn}
-        <div class="text-xs text-gray-500">Uploaded: ${uploadedDate}</div>
-      </div>
+        <div class="flex flex-col items-center mt-2 space-y-2">
+          ${certBtn}
+          <div class="text-xs text-gray-500">Uploaded: ${uploadedDate}</div>
+        </div>
 
-      <div class="absolute top-2 right-2">
-        <button onclick="toggleMenu('${menuId}', event)"
-                class="text-xl p-2 rounded-full text-purple-800 hover:bg-purple-100 hover:text-purple-700 transition">
-          ⋮
-        </button>
-        <div id="${menuId}" class="hidden absolute right-0 mt-2 w-52 bg-white shadow-lg border border-purple-200 rounded-md z-50 overflow-hidden">
-          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
-                  onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">✏️ Edit Skill</button>
-          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
-                  onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">📄 Add/Update Certificate</button>
-          <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
-                  onclick="removeCertificate('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">❌ Remove Certificate</button>
-          <button class="w-full px-4 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-600 text-left"
-                  onclick="deleteSkill('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">🗑️ Delete Skill</button>
+        <div class="absolute top-2 right-2">
+          <button onclick="toggleMenu('${menuId}', event)"
+                  class="text-xl p-2 rounded-full text-purple-800 hover:bg-purple-100 hover:text-purple-700 transition">
+            ⋮
+          </button>
+          <div id="${menuId}" class="hidden absolute right-0 mt-2 w-52 bg-white shadow-lg border border-purple-200 rounded-md z-50 overflow-hidden">
+            <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                    onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">✏️ Edit Skill</button>
+            <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                    onclick="editSkill('${skillDoc.id}', event); closeMenu('${menuId}')">📄 Add/Update Certificate</button>
+            <button class="w-full px-4 py-2 text-sm hover:bg-purple-50 text-gray-800 text-left"
+                    onclick="removeCertificate('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">❌ Remove Certificate</button>
+            <button class="w-full px-4 py-2 text-sm bg-red-50 hover:bg-red-100 text-red-600 text-left"
+                    onclick="deleteSkill('${skillDoc.id}', event, \`${data.title.replace(/`/g, "\\`")}\`); closeMenu('${menuId}')">🗑️ Delete Skill</button>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
+    skillCard.addEventListener("click", async (event) => {
+      if (event.target.closest("button")) return;
 
-skillCard.addEventListener("click", async (event) => {
-  // ⛔ Prevent modal from opening when clicking on any inner button like ⋮, Edit, Delete
-  if (event.target.closest("button")) return;
+      const fileId = extractDriveFileId(data.link);
+      let fileName = "";
 
-  const fileId = extractDriveFileId(data.link);
-  let fileName = "";
+      try {
+        if (fileId && fileNameCache[fileId]) {
+          fileName = fileNameCache[fileId];
+        } else if (fileId) {
+          fileName = await fetchDriveFileName(fileId, apiKey);
+          if (fileName) fileNameCache[fileId] = fileName;
+        }
+      } catch (err) {
+        console.error("❌ Failed to fetch file name:", err);
+      }
 
-  try {
-    if (fileId && fileNameCache[fileId]) {
-      fileName = fileNameCache[fileId];
-    } else if (fileId) {
-      fileName = await fetchDriveFileName(fileId, apiKey);
-      if (fileName) fileNameCache[fileId] = fileName;
-    }
-  } catch (err) {
-    console.error("❌ Failed to fetch file name:", err);
-  }
+      const preview = getCertificatePreview(data.link, data.title, fileName);
 
-  const preview = getCertificatePreview(data.link, data.title, fileName);
+      document.getElementById("modalContent").innerHTML = `
+        <h2 class="text-xl font-semibold">${data.title}</h2>
+        <p class="text-sm mt-2">${data.desc || "No description"}</p>
+        ${data.acquiredDate ? `<p class="text-sm mt-1 text-gray-600">Skill Acquired: ${data.acquiredDate}</p>` : ""}
+        <p class="text-sm text-gray-500 mt-1">Uploaded: ${uploadedDate}</p>
+        ${preview}
+        <div class="mt-4">
+          <div class="border border-purple-200 rounded-md p-2 bg-purple-50 text-left w-fit">
+            <button onclick="editSkill('${skillDoc.id}', event)" class="text-sm text-purple-700 hover:underline">
+              ✏️ Edit
+            </button>
+          </div>
+        </div>
+      `;
 
-  document.getElementById("modalContent").innerHTML = `
-    <h2 class="text-xl font-semibold">${data.title}</h2>
-    <p class="text-sm mt-2">${data.desc || "No description"}</p>
-    ${data.acquiredDate ? `<p class="text-sm mt-1 text-gray-600">Skill Acquired: ${data.acquiredDate}</p>` : ""}
-    <p class="text-sm text-gray-500 mt-1">Uploaded: ${uploadedDate}</p>
-    ${preview}
-    <div class="mt-4">
-      <div class="border border-purple-200 rounded-md p-2 bg-purple-50 text-left w-fit">
-        <button onclick="editSkill('${skillDoc.id}', event)" class="text-sm text-purple-700 hover:underline">
-          ✏️ Edit
-        </button>
-      </div>
-    </div>
-  `;
-
-  showModalWithHistory("detailModal");
-});
-
+      showModalWithHistory("detailModal");
+    });
 
     skillsList.appendChild(skillCard);
   });
@@ -928,8 +889,36 @@ skillCard.addEventListener("click", async (event) => {
   isLoadingSkills = false;
 }
 
-//------------------
+// ------------------- 🔍 Skill Search -------------------
+const skillSearchInput = document.getElementById("searchBar"); // ✅ Corrected ID
 
+skillSearchInput.addEventListener("input", () => {
+  const query = skillSearchInput.value.toLowerCase().trim();
+  const skillCards = document.querySelectorAll("#skillsList > div");
+
+  let hasMatch = false;
+
+  skillCards.forEach(card => {
+    const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
+    const desc = card.querySelector("p")?.textContent.toLowerCase() || "";
+
+    const match = title.includes(query) || desc.includes(query);
+    card.classList.toggle("hidden", !match);
+
+    if (match) hasMatch = true;
+  });
+
+  const noSkillsMsg = document.getElementById("noSkillsMsg");
+  if (noSkillsMsg) {
+    noSkillsMsg.textContent = query ? "No matching skills found." : "You haven't added any skills yet. Please click ➕ to add your first skill.";
+    
+    // Check if there are any skills at all before showing a "no match" message
+    const totalSkills = document.querySelectorAll("#skillsList > div:not(.hidden)").length;
+    noSkillsMsg.classList.toggle("hidden", hasMatch || totalSkills > 0);
+  }
+});
+
+// ------------------- 🔁 Menu Close on Click Outside -------------------
 document.addEventListener("click", (e) => {
   const allMenus = document.querySelectorAll("[id^='menu-']");
   allMenus.forEach(menu => {
@@ -1017,7 +1006,7 @@ window.confirmDeleteAccount = async function () {
 
     // 4️⃣ Success message and redirect
     showToast("✅ Account deleted successfully. Goodbye!");
-    location.href = "index.html";
+    location.href = "login.html";
 
   } catch (err) {
     console.error("❌ Delete account failed:", err);
@@ -1355,7 +1344,7 @@ window.confirmDeleteAccount = async function () {
     await deleteUser(user);
 
     showToast("✅ Account deleted successfully. Goodbye!");
-    location.href = "index.html";
+    location.href = "login.html";
   } catch (err) {
     console.error("❌ Delete account failed:", err);
     if (err.code === "auth/requires-recent-login") {
@@ -1398,7 +1387,7 @@ window.confirmDeleteAccount = async function () {
       // ✅ Step 4: Redirect to login with toast
       showToast("✅ Your account has been deleted.", "success");
       setTimeout(() => {
-        window.location.href = "index.html";
+        window.location.href = "login.html";
       }, 1500);
 
     } catch (err) {
@@ -1432,7 +1421,9 @@ window.confirmDeleteAccount = async function () {
   <textarea id="skillDesc" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
     placeholder="Skill Description (optional)"></textarea>
 
-  <input type="date" id="skillDate" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400" />
+  <label for="skillDate" class="block text-sm font-medium text-gray-700">Date Acquired</label>
+  <input type="date" id="skillDate" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
+    placeholder="Select date acquired" title="Date Acquired" />
 
   <!-- 📄 Certificate Link Input -->
   <input type="url" id="skillLink" class="w-full border border-purple-200 rounded px-3 py-2 focus:ring-2 focus:ring-purple-400"
@@ -1493,6 +1484,7 @@ window.confirmDeleteAccount = async function () {
     </div>
   </div>
 </div>
+
 
 </body>
 </html>
