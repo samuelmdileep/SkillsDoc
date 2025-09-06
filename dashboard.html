@@ -52,11 +52,11 @@
 <main class="ml-0 md:ml-64 px-4 pt-6 pb-8 bg-purple-900 text-white transition-all duration-300 min-h-screen">
 
 <div id="skillsSection" class="space-y-6">
-  <div class="flex items-center gap-4">
+  <div class="flex flex-wrap items-center justify-between gap-y-4 gap-x-4">
 
-    <h2 class="text-2xl font-bold text-purple-200 flex-shrink-0">📄 My Skills</h2>
+    <h2 class="text-2xl font-bold text-purple-200">📄 My Skills</h2>
 
-    <div class="flex-grow">
+    <div class="w-full order-3 md:w-auto md:flex-grow md:order-2">
       <input
         type="text"
         id="searchBar"
@@ -66,7 +66,7 @@
       />
     </div>
 
-    <a href="resume.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md transition-all duration-200 inline-block whitespace-nowrap flex-shrink-0">
+    <a href="resume.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md transition-all duration-200 inline-block whitespace-nowrap order-2 md:order-3">
       📝 Generate Resume
     </a>
   </div>
@@ -1488,3 +1488,4 @@ window.confirmDeleteAccount = async function () {
 
 </body>
 </html>
+
