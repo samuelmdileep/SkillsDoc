@@ -290,7 +290,7 @@ function updateProfileUI(user, data) {
 // ------------------- 🔁 Auth & Profile -------------------
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -496,7 +496,7 @@ function openConfirmModal(title, message, onConfirm) {
 
 
 logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => (window.location.href = "login.html"));
+  signOut(auth).then(() => (window.location.href = "index.html"));
 });
 
 window.saveProfileInfo = async function () {
@@ -1013,7 +1013,7 @@ window.confirmDeleteAccount = async function () {
 
     // 4️⃣ Success message and redirect
     showToast("✅ Account deleted successfully. Goodbye!");
-    location.href = "login.html";
+    location.href = "index.html";
 
   } catch (err) {
     console.error("❌ Delete account failed:", err);
@@ -1351,7 +1351,7 @@ window.confirmDeleteAccount = async function () {
     await deleteUser(user);
 
     showToast("✅ Account deleted successfully. Goodbye!");
-    location.href = "login.html";
+    location.href = "index.html";
   } catch (err) {
     console.error("❌ Delete account failed:", err);
     if (err.code === "auth/requires-recent-login") {
@@ -1394,7 +1394,7 @@ window.confirmDeleteAccount = async function () {
       // ✅ Step 4: Redirect to login with toast
       showToast("✅ Your account has been deleted.", "success");
       setTimeout(() => {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       }, 1500);
 
     } catch (err) {
@@ -1495,6 +1495,7 @@ window.confirmDeleteAccount = async function () {
 
 </body>
 </html>
+
 
 
 
